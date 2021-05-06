@@ -4,7 +4,7 @@
 ;; Version: 0.1
 ;; Package-Requires: ((f "0.20.0"))
 ;; Keywords: files, network
-;; URL: https://www.github.com/mzhu65536-um/ferry
+;; URL: https://github.com/mzhu65536-um/ferry-mode
 
 ;;; Commentary:
 ;; A simple implementation of file exchange between local and remote in high
