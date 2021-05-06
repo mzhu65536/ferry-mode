@@ -1,0 +1,4 @@
+# Ferry
+
+An Emacs mode designed to transfer and exchanged files under the scenarios of
+high latency.
