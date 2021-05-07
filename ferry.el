@@ -37,7 +37,7 @@
     (define-key map (kbd "r") #'ferry-reload)
     (define-key map (kbd "s") #'ferry-push-file)
     (define-key map (kbd "f") #'ferry-pull-file)
-    (define-key map (kbd "n") #'ferry-sync-buffer)
+    (define-key map (kbd "x") #'ferry-sync-buffer)
     map))
 
 (defvar ferry-mode-map

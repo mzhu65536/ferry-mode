@@ -145,44 +145,38 @@ Returns the project file directory if found, nil otherwise."
                       (f-full dir)
                     (unless (f-root? dir)
                       (funcall loop-aux (f-parent dir)))))))))
-    (funcall loop-aux (file-name-directory ferry-buffer-name))))
+    (funcall loop-aux
+             (if (f-dir-p ferry-buffer-name)
+                 ferry-buffer-name
+               (file-name-directory ferry-buffer-name)))))
 
 (defun ferry-push-file ()
   "Upload the file to the remote end."
   (interactive)
   (if (eq ferry-status 'local-loaded)
-      (copy-file ferry-buffer-name
-                 (ferry-remote-f ferry-relative-name)
-                 t t)
+      (ferry--do-push-file ferry-relative-name)
     (ferry-fail-message)))
+
+(defun ferry--do-push-file (filename)
+  "Upload the FILENAME to the remote end."
+  (copy-file (ferry-local-f filename)
+             (ferry-remote-f filename)
+             t t))
 
 (defun ferry-pull-file ()
   "Download the remote version and replace the current buffer."
   (interactive)
   (if (eq ferry-status 'local-loaded)
       (progn
-        (copy-file (ferry-remote-f ferry-relative-name)
-                   ferry-buffer-name
-                   t t)
+        (ferry--do-push-file ferry-relative-name)
         (revert-buffer t t))
     (ferry-fail-message)))
 
-;; (defun ferry-sync-dir ()
-;;   "Synchronize the local directory with the remote.
-
-;; However, it is the users' responsibility to reload buffer from disk."
-;;   (let* ((dir (read-directory-name "Directory to sync: " nil
-;;                                    (f-dirname ferry-relative-name)))
-;;          (file-attr-contained (directory-files-and-attributes
-;;                                (ferry-remote-f dir)))
-;;          (files-new-old (split-files (cdr (cdr file-attr-contained))))
-;;          (files-new-commit (read-file-name "Remote -> Local: " nil
-;;                                            (car files-new-old)))
-;;          (files-old-commit (read-file-name "Local -> Remote: " nil
-;;                                            (cdr (files-old-new)))))
-;;     (-map (lambda (f) (copy-file (ferry-remote-f f) (ferry-local-f f) t t))
-;;           files-to-sync)))
-
+(defun ferry--do-pull-file (filename)
+  "Upload the FILENAME to the remote end."
+  (copy-file (ferry-remote-f filename)
+             (ferry-local-f filename)
+             t t))
 ;;; Miscs
 (defun ferry-fail-message ()
   "Print mode related errors in `ferry-mode'."
