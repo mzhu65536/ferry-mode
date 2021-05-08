@@ -267,6 +267,9 @@ If UPDATE-ONLY is non-nil, the tabular header will bot be set."
         (ferry-commit-batch-new-remote-dir remote-list-dir)))
     (ferry-commit-reload)))
 
+(defun ferry-commit--file-directory-related (f)
+  (concat ferry-relative-name f))
+
 (defun ferry-commit-reload ()
   "Reload the current `ferry-commit-mode' buffer."
   (interactive)
@@ -275,19 +278,23 @@ If UPDATE-ONLY is non-nil, the tabular header will bot be set."
 
 (defun ferry-commit-batch-push (push-list)
   "Push a PUSH-LIST of files from local."
-  (-map #'ferry--do-push-file push-list))
+  (-map #'ferry--do-push-file
+        (-map #'ferry-commit--file-directory-related push-list)))
 
 (defun ferry-commit-batch-pull (pull-list)
   "Push a PULL-LIST of files from remote."
-  (-map #'ferry--do-pull-file pull-list))
+  (-map #'ferry--do-pull-file
+        (-map #'ferry-commit--file-directory-related pull-list)))
 
 (defun ferry-commit-batch-new-local-dir (local-list)
   "Make LOCAL-LIST of new directory at local."
-  (-map (lambda (d) (make-directory (ferry-local-f d))) local-list))
+  (-map (lambda (d) (make-directory (ferry-local-f d)))
+        (-map #'ferry-commit--file-directory-related local-list)))
 
 (defun ferry-commit-batch-new-remote-dir (remote-list)
   "Make REMOTE-LIST of new directory at remote."
-  (-map (lambda (d) (make-directory (ferry-remote-f d))) remote-list))
+  (-map (lambda (d) (make-directory (ferry-remote-f d)))
+        (-map #'ferry-commit--file-directory-related remote-list)))
 
 (defun ferry-commit--ignore-filename (l)
   "Remove ignored files from L."

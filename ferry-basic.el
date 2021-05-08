@@ -11,6 +11,7 @@
 ;; lantency network settings.
 
 ;;; Code:
+(require 'tramp)
 (require 'dash)
 (require 's)                            ; sexp
 (require 'f)                            ; file ops
@@ -74,7 +75,7 @@ One of `local-unloaded' `local-loaded' `remote' `non-file'")
 
 (defun ferry-remote-f (f)
   "Translate relative filename [F] into root based."
-  (f-join ferry-remote-root f))
+  (tramp-drop-volume-letter (f-join ferry-remote-root f)))
 
 (defun ferry-local-f (f)
   "Translate relative filename [F] into local based."
