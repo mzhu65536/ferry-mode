@@ -12,6 +12,7 @@
 ;; To be using to prompt which files to be sync and how they will be synced.
 
 ;;; Code:
+(require 'tramp)
 (require 'tabulated-list)
 (require 'ferry-basic)
 
@@ -268,7 +269,7 @@ If UPDATE-ONLY is non-nil, the tabular header will bot be set."
     (ferry-commit-reload)))
 
 (defun ferry-commit--file-directory-related (f)
-  (concat ferry-relative-name f))
+  (tramp-drop-volume-letter (f-join ferry-relative-name f)))
 
 (defun ferry-commit-reload ()
   "Reload the current `ferry-commit-mode' buffer."
