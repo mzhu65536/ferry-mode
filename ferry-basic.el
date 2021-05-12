@@ -155,29 +155,37 @@ Returns the project file directory if found, nil otherwise."
   "Upload the file to the remote end."
   (interactive)
   (if (eq ferry-status 'local-loaded)
-      (ferry--do-push-file ferry-relative-name)
+      (ferry--do-push-file ferry-relative-name t)
     (ferry-fail-message)))
 
-(defun ferry--do-push-file (filename)
+(defun ferry--do-push-file (filename &optional ask)
   "Upload the FILENAME to the remote end."
-  (copy-file (ferry-local-f filename)
-             (ferry-remote-f filename)
-             t t))
+  (if (or (not ask) (y-or-n-p (format
+                               "Push from %s to %s?"
+                               (ferry-local-f filename)
+                               (ferry-remote-f filename))))
+      (copy-file (ferry-local-f filename)
+                 (ferry-remote-f filename)
+                 t t)))
 
 (defun ferry-pull-file ()
   "Download the remote version and replace the current buffer."
   (interactive)
   (if (eq ferry-status 'local-loaded)
       (progn
-        (ferry--do-push-file ferry-relative-name)
+        (ferry--do-pull-file ferry-relative-name t)
         (revert-buffer t t))
     (ferry-fail-message)))
 
-(defun ferry--do-pull-file (filename)
+(defun ferry--do-pull-file (filename &optional ask)
   "Upload the FILENAME to the remote end."
-  (copy-file (ferry-remote-f filename)
-             (ferry-local-f filename)
-             t t))
+  (if (or (not ask) (y-or-n-p (format
+                               "Pull from %s to %s?"
+                               (ferry-remote-f filename)
+                               (ferry-local-f filename))))
+      (copy-file (ferry-remote-f filename)
+                 (ferry-local-f filename)
+                 t t)))
 ;;; Miscs
 (defun ferry-fail-message ()
   "Print mode related errors in `ferry-mode'."
