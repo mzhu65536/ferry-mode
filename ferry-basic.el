@@ -152,16 +152,16 @@ Returns the project file directory if found, nil otherwise."
                (file-name-directory ferry-buffer-name)))))
 
 (defun ferry-push-file ()
-  "Upload the file to the remote end."
+  "Upload the file in current buffer to the remote end."
   (interactive)
   (if (eq ferry-status 'local-loaded)
       (ferry--do-push-file ferry-relative-name t)
     (ferry-fail-message)))
 
 (defun ferry--do-push-file (filename &optional ask)
-  "Upload the FILENAME to the remote end."
+  "Upload FILENAME to the remote end.  Prompt confirmation when ASK."
   (if (or (not ask) (y-or-n-p (format
-                               "Push from %s to %s?"
+                               "Push from %s to %s? "
                                (ferry-local-f filename)
                                (ferry-remote-f filename))))
       (copy-file (ferry-local-f filename)
@@ -178,9 +178,9 @@ Returns the project file directory if found, nil otherwise."
     (ferry-fail-message)))
 
 (defun ferry--do-pull-file (filename &optional ask)
-  "Upload the FILENAME to the remote end."
+  "Download FILENAME from the remote end.  Prompt confirmation when ASK."
   (if (or (not ask) (y-or-n-p (format
-                               "Pull from %s to %s?"
+                               "Pull from %s to %s? "
                                (ferry-remote-f filename)
                                (ferry-local-f filename))))
       (copy-file (ferry-remote-f filename)
