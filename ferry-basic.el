@@ -111,7 +111,8 @@ NAME can be optionally provided to override the default file/dir name."
                             ferry-remote-root
                             (f-read (f-join pdir ferry-project-file)))
                 (setq-local ferry-relative-name
-                            (ferry-relate-name ferry-buffer-name)))
+                            (ferry-relate-name ferry-buffer-name))
+                (message "Ferry is up!"))
             (setq-local ferry-status 'local-unloaded))))
     (setq-local ferry-status 'non-file)))
 
@@ -126,7 +127,8 @@ Essential for user to reload the mode after editing the project file."
               ferry-local-root nil
               ferry-remoe-root nil
               ferry-relative-name nil)
-  (ferry-init))
+  (ferry-init)
+  (message "Ferry reloaded."))
 
 (defun ferry-new-project-and-reload (local-root remote-root)
   "Create a project file LOCAL-ROOT containing REMOTE-ROOT in the first line."
@@ -164,9 +166,12 @@ Returns the project file directory if found, nil otherwise."
                                "Push from %s to %s? "
                                (ferry-local-f filename)
                                (ferry-remote-f filename))))
-      (copy-file (ferry-local-f filename)
-                 (ferry-remote-f filename)
-                 t t)))
+      (make-thread
+       (lambda ()
+         (copy-file (ferry-local-f filename)
+                    (ferry-remote-f filename)
+                    t t)
+         (message "Async push done.")))))
 
 (defun ferry-pull-file ()
   "Download the remote version and replace the current buffer."

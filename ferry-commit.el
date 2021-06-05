@@ -56,6 +56,7 @@
 (defvar ferry-commit-mode-map
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map tabulated-list-mode-map)
+    (define-key map "_" 'ferry-commit-all-bypass)
     (define-key map "^" 'ferry-commit-select-push)
     (define-key map "v" 'ferry-commit-select-pull)
     (define-key map "-" 'ferry-commit-select-bypass)
@@ -88,6 +89,16 @@ This option is applicable to any type"
   (interactive)
   (tabulated-list-set-col 0 ferry-commit-bypass-string t)
   (forward-line 1))
+
+(defun ferry-commit-all-bypass ()
+  "Set the control flag of all entries to `bypass'.
+This option is applicable to any type"
+  (interactive)
+  (goto-char (point-min))
+  (while (not (eobp))
+    (tabulated-list-set-col 0 ferry-commit-bypass-string t)
+    (forward-line 1)))
+
 
 (define-derived-mode ferry-commit-mode tabulated-list-mode "Ferry Commit"
   "Major mode for Ferry Commit buffers."
@@ -266,7 +277,8 @@ If UPDATE-ONLY is non-nil, the tabular header will bot be set."
         (ferry-commit-batch-new-local-dir local-list-dir))
       (when remote-dir-p
         (ferry-commit-batch-new-remote-dir remote-list-dir)))
-    (ferry-commit-reload)))
+    (ferry-commit-reload)
+    (message "Ferry Commit reloaded.")))
 
 (defun ferry-commit--file-directory-related (f)
   (tramp-drop-volume-letter (f-join ferry-relative-name f)))
