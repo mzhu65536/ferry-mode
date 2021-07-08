@@ -291,7 +291,7 @@ If UPDATE-ONLY is non-nil, the tabular header will bot be set."
 
 (defun ferry-commit-batch-push (push-list)
   "Push a PUSH-LIST of files from local."
-  (-map #'ferry--do-push-file
+  (-map #'ferry--do-push-file/sync
         (-map #'ferry-commit--file-directory-related push-list)))
 
 (defun ferry-commit-batch-pull (pull-list)

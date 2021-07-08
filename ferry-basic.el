@@ -173,6 +173,19 @@ Returns the project file directory if found, nil otherwise."
                     t t)
          (message "Async push done.")))))
 
+(defun ferry--do-push-file/sync (filename &optional ask)
+  "Upload FILENAME to the remote end.  Prompt confirmation when ASK."
+  (if (or (not ask) (y-or-n-p (format
+                               "Push from %s to %s? "
+                               (ferry-local-f filename)
+                               (ferry-remote-f filename))))
+      (progn
+        (copy-file (ferry-local-f filename)
+                   (ferry-remote-f filename)
+                   t t)
+        (message "Sync Push Done."))))
+
+
 (defun ferry-pull-file ()
   "Download the remote version and replace the current buffer."
   (interactive)
